@@ -14,7 +14,7 @@ pipeline {
             environment {
                 SCANNER_HOME = tool 'Sonar Scanner 4'
                 ORGANIZATION = "bhubr-github"
-                PROJECT_NAME = "bhubr_jenkins-pipeline-as-code"
+                PROJECT_NAME = "bhubr-jenkins-manning-sca-lp"
             }
             steps {
                 withSonarQubeEnv('SonarQube EC2 instance') {
