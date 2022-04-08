@@ -3,6 +3,19 @@ import { getData, storeData } from './localStorage';
 const KEY = 'test';
 
 describe('localStorage helpers', () => {
+	let consoleError;
+
+	// silence console.error
+	beforeAll(() => {
+		consoleError = console.error;
+		console.error = () => {};
+	});
+
+	// put back console.error
+	afterAll(() => {
+		console.error = consoleError;
+	});
+
 	beforeEach(() => {
 		localStorage.removeItem(KEY);
 	});
@@ -25,7 +38,7 @@ describe('localStorage helpers', () => {
 
 	describe('storeData', () => {
 		it('stores some data', () => {
-			storeData(KEY, { msg: 'hello' })
+			storeData(KEY, { msg: 'hello' });
 			expect(localStorage.getItem(KEY)).toBe('{"msg":"hello"}');
 		});
 
@@ -33,8 +46,8 @@ describe('localStorage helpers', () => {
 			// circular
 			const obj = {};
 			obj.obj = obj;
-			storeData(KEY, obj)
+			storeData(KEY, obj);
 			expect(localStorage.getItem(KEY)).toBe(null);
 		});
-	})
+	});
 });
