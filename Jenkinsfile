@@ -8,6 +8,8 @@ pipeline {
                     steps {
                         nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             sh 'node --version'
+                            // I had issues with `npm test`, both locally and in
+                            // Jenkins pipeline execution, so I ended up using yarn
                             sh 'npm i -g yarn'
                             sh 'yarn'
                         }
@@ -35,6 +37,8 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube EC2 instance') {
                     nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                        // Important: send lcov.info so that SonarQube processes
+                        // code coverage output from Jest
                         sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
                         -Dsonar.java.binaries=build/classes/java/ \
                         -Dsonar.projectKey=$PROJECT_NAME \
