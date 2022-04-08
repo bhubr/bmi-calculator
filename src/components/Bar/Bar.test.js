@@ -19,7 +19,5 @@ describe("Bar component", () => {
 
   it("renders", () => {
     expect(wrapper).not.toBeNull();
-
-    console.log(wrapper.debug());
   });
 });
