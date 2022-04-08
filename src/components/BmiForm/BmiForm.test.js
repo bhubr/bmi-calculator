@@ -32,4 +32,12 @@ describe("BmiForm Component", () => {
     wrapper.find("button").simulate("click");
     expect(prop.change).toHaveBeenCalledTimes(1);
   });
+
+  it("should not let input more than 999", () => {
+    const height = wrapper.find("#height");
+    height.simulate("change", { target: { name: "height", value: "1001" } });
+    // new value is stored in state as number
+    expect(wrapper.find("#height").props().value).toEqual(999);
+    expect(prop.change).toHaveBeenCalledTimes(1);
+  });
 });

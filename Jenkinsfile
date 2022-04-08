@@ -21,6 +21,11 @@ pipeline {
                             sh 'npm test'
                         }
                     }
+                    post {
+                        always {
+                            step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml', lineCoverageTargets: '90, 55, 45', failUnhealthy: false, failUnstable: false])
+                        }
+                    }
                 }
             }
         }
@@ -43,6 +48,7 @@ pipeline {
                         -Dsonar.java.binaries=build/classes/java/ \
                         -Dsonar.projectKey=$PROJECT_NAME \
                         -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                        -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
                         -Dsonar.sources=src'''
                     }
                 }
