@@ -32,10 +32,7 @@
     ],
     "coverageReporters": [
       "lcov"
-    ],
-    "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
-    }
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
