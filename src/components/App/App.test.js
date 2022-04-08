@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import App from './App';
+import { storeData } from '../../helpers/localStorage';
 
 describe('App Component', () => {
 	let wrapper;
@@ -41,5 +42,29 @@ describe('App Component', () => {
 			'BMI: ',
 			'22.16',
 		]);
+	});
+
+	it('handles item deletion', () => {
+		// store sample data
+		const sampleData = [
+			{
+				weight: '68',
+				height: '175',
+				date: '4/9/2022',
+				bmi: '22.20',
+				id: '9c8eb716-ecd0-4db6-85fe-4561672b1cab',
+			},
+		];
+		storeData('data', sampleData);
+
+		wrapper = mount(<App />);
+
+		const deleteBtn = wrapper.find('.delete-btn').first();
+		deleteBtn.simulate('click');
+
+		const cards = wrapper.find('.card-content');
+		expect(cards.length).toBe(0);
+
+		localStorage.removeItem('data');
 	});
 });
