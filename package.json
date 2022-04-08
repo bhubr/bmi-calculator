@@ -29,7 +29,8 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
       "!src/index.js"
-    ]
+    ],
+    "coverageReporters": ["lcov", "cobertura"]
   },
   "eslintConfig": {
     "extends": "react-app"

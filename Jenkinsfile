@@ -21,6 +21,11 @@ pipeline {
                             sh 'npm test'
                         }
                     }
+                    post {
+                        always {
+                            step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml', lineCoverageTargets: '90, 55, 45', failUnhealthy: false, failUnstable: false])
+                        }
+                    }
                 }
             }
         }
