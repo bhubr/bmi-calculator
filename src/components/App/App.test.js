@@ -3,8 +3,19 @@ import { shallow, mount } from 'enzyme';
 import App from './App';
 import { storeData } from '../../helpers/localStorage';
 
+const createSampleData = (index = 0) => ({
+	weight: '68',
+	height: '175',
+	date: '4/9/2022',
+	bmi: '22.20',
+	id: `9c8eb716-ecd0-4db6-85fe-4561672b1ca${index}`,
+});
+
 describe('App Component', () => {
 	let wrapper;
+	beforeEach(() => {
+		localStorage.removeItem('data');
+	});
 
 	it('passes shallow render', () => {
 		wrapper = shallow(<App />);
@@ -46,16 +57,8 @@ describe('App Component', () => {
 
 	it('handles item deletion', () => {
 		// store sample data
-		const sampleData = [
-			{
-				weight: '68',
-				height: '175',
-				date: '4/9/2022',
-				bmi: '22.20',
-				id: '9c8eb716-ecd0-4db6-85fe-4561672b1cab',
-			},
-		];
-		storeData('data', sampleData);
+		const item = createSampleData();
+		storeData('data', [item]);
 
 		wrapper = mount(<App />);
 
@@ -64,7 +67,29 @@ describe('App Component', () => {
 
 		const cards = wrapper.find('.card-content');
 		expect(cards.length).toBe(0);
+	});
 
-		localStorage.removeItem('data');
+	it('ceils number of items to 7', () => {
+		// store sample data
+		const sampleData = new Array(7)
+			.fill(0)
+			.map((_, index) => createSampleData(index));
+		storeData('data', sampleData);
+
+		wrapper = mount(<App />);
+
+		let cards = wrapper.find('.card-content');
+		expect(cards.length).toBe(7);
+
+		wrapper.find('#weight').simulate('change', {
+			target: { name: 'weight', value: '71' },
+		});
+		wrapper.find('#height').simulate('change', {
+			target: { name: 'height', value: '171' },
+		});
+		wrapper.find('#bmi-btn').first().simulate('click');
+
+		cards = wrapper.find('.card-content');
+		expect(cards.length).toBe(7);
 	});
 });
