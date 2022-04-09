@@ -10,9 +10,11 @@ pipeline {
                 stage('Check node version and install dependencies') {
                     steps {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                            script {
+                                npmdir = "${HOME}/.npm-packages"
+                            }
                             sh 'ash ./setup-npm.sh'
                             sh 'node --version'
-                            def npmdir = "${HOME}/.npm-packages"
                             if (fileExists(npmdir)) {
                                 echo 'Yes .npm-packages exists'
                             } else {
