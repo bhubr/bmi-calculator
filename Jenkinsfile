@@ -134,7 +134,7 @@ pipeline {
                 stage('Docker build') {
                     steps {
                         sh '''docker build \
-                        --label org.label-schema.name=IMAGE_NAME \
+                        --label org.label-schema.name=$IMAGE_NAME \
                         --label org.label-schema.build-date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
                         --label org.label-schema.vcs-ref=$(git rev-parse --short HEAD) \
                         --label org.label-schema.version=0.1 \
