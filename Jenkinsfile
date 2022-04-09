@@ -101,6 +101,11 @@ pipeline {
                 docker { image 'node:16-alpine' }
             }
             stages {
+                stage('Setup') {
+                    steps {
+                        sh 'apk add zip'
+                    }
+                }
                 stage('Generate build') {
                     steps {
                         script {
@@ -108,7 +113,7 @@ pipeline {
                                 sh "rm -rf build"
                             }
                         }
-                        sh "npm run build"
+                        sh "yarn build"
                     }
                 }
                 stage('Zip build and archive it') {
