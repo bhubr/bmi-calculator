@@ -12,12 +12,13 @@ pipeline {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             sh 'ash ./setup-npm.sh'
                             sh 'node --version'
-                            if (fileExists("${HOME}/.npm-packages")) {
-                                echo 'Yes .npm-packages'
+                            npmdir = "${HOME}/.npm-packages"
+                            if (fileExists(npmdir)) {
+                                echo 'Yes .npm-packages exists'
                             } else {
                                 echo 'No .npm-packages does not exist, create it'
                                 sh "mkdir ${HOME}/.npm-packages"
-                                if (fileExists("${HOME}/.npm-packages")) {
+                                if (fileExists(npmdir)) {
                                     echo 'Yes .npm-packages has been created'
                                 } else {
                                     echo 'failure to create .npm-packages'
