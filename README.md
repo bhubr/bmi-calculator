@@ -39,7 +39,12 @@ yarn build
 ## 2. Build Docker image
 
 ```
-docker build -t yourusername/bmi-calculator:0.1
+docker build \
+  --label org.label-schema.name=bhubr/bmi-calculator \
+  --label org.label-schema.build-date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --label org.label-schema.vcs-ref=$(git rev-parse --short HEAD) \
+  --label org.label-schema.version=0.1 \
+  -t yourusername/bmi-calculator:0.1 .
 ```
 
 ## 3. Run container
