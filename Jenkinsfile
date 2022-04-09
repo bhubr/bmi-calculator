@@ -12,7 +12,7 @@ pipeline {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             sh 'ash ./setup-npm.sh'
                             sh 'node --version'
-                            npmdir = "${HOME}/.npm-packages"
+                            def npmdir = "${HOME}/.npm-packages"
                             if (fileExists(npmdir)) {
                                 echo 'Yes .npm-packages exists'
                             } else {
