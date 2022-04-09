@@ -52,6 +52,11 @@ pipeline {
             }
         }
         stage('Static Code Analysis') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                }
+            }
             // Get path to sonar-scanner,
             // Set variables to be used as organization and projectKey
             environment {
@@ -69,7 +74,7 @@ pipeline {
                     }
                 }
                 withSonarQubeEnv('SonarQube EC2 instance') {
-                    nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                    // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                         unstash 'coverage-data'
                         // Important: send lcov.info so that SonarQube processes
                         // code coverage output from Jest
@@ -81,7 +86,7 @@ pipeline {
                         -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                         -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
                         -Dsonar.sources=src'''
-                    }
+                    // }
                 }
             }
         }
