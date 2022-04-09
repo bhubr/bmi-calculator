@@ -13,7 +13,7 @@ pipeline {
                             sh 'node --version'
                             // I had issues with `npm test`, both locally and in
                             // Jenkins pipeline execution, so I ended up using yarn
-                            sh 'npm i -g yarn'
+                            sh 'sudo npm i -g yarn'
                             sh 'yarn'
                         // }
                     }
