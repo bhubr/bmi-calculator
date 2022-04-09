@@ -73,12 +73,13 @@ pipeline {
                         sh "rm -rf coverage"
                     }
                 }
-                withSonarQubeEnv('SonarQube EC2 instance') {
+                // withSonarQubeEnv('SonarQube EC2 instance') {
                     // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                         unstash 'coverage-data'
                         // Important: send lcov.info so that SonarQube processes
                         // code coverage output from Jest
                         sh "echo pwd is ${PWD}"
+                        sh "cat src/components/App/App.test.js"
                         sh 'ls -ltrh coverage'
                         sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
                         -Dsonar.java.binaries=build/classes/java/ \
@@ -87,7 +88,7 @@ pipeline {
                         -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
                         -Dsonar.sources=src'''
                     // }
-                }
+                // }
             }
         }
         stage('Quality Gate') {
