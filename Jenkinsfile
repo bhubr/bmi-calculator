@@ -10,8 +10,7 @@ pipeline {
           steps {
             nodejs(nodeJSInstallationName: 'Node 16 LTS') {
               sh 'ls -a'
-              sh '[[ -f build.zip ]] && rm build.zip'
-              sh '[[ -d build ]] && rm -r build'
+              sh 'bash rm-build.sh'
               sh 'node --version'
               sh 'npm ci'
             }
