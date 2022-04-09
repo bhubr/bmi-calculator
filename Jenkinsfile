@@ -96,5 +96,16 @@ pipeline {
                 }
             }
         }
+        stage('Build') {
+            agent {
+                docker { image 'node:16-alpine' }
+            }
+            steps {
+                if (fileExists("build")) {
+                    sh "rm -rf build"
+                }
+                sh "npm run build"
+            }
+        }
     }
 }
