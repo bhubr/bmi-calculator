@@ -96,5 +96,43 @@ pipeline {
                 }
             }
         }
+        stage('Build') {
+            agent {
+                docker { image 'node:16-alpine' }
+            }
+            stages {
+                stage('Generate build') {
+                    steps {
+                        script {
+                            if (fileExists("build")) {
+                                sh "rm -rf build"
+                            }
+                        }
+                        sh "yarn build"
+                    }
+                }
+                stage('Zip build and archive it') {
+                    steps {
+                        zip zipFile: 'build.zip', archive: true, dir: 'build', overwrite: true
+                        stash includes: 'build.zip', name: 'build-archive', allowEmpty: false
+                    }
+                }
+            }
+        }
+        stage('Retrieve staged build') {
+            steps {
+                sh "cd /tmp"
+                unstash 'build-archive'
+                sh 'ls -l *.zip'
+            }
+        }
+    }
+    post {
+        success {
+            slackSend color: 'good', message: "Jenkins build #${BUILD_NUMBER} SUCCESS at ${BUILD_URL}"
+        }
+        failure {
+            slackSend color: 'danger', message: "Jenkins build #${BUILD_NUMBER} FAILURE at ${BUILD_URL}"
+        }
     }
 }
