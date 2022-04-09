@@ -7,11 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Hello Workd') {
-            steps {
-                sh 'echo Hello World'
-            }
-        }
         stage('Continuous integration') {
             agent {
                 docker { image 'node:16-alpine' }
