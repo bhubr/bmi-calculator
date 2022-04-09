@@ -81,7 +81,10 @@ pipeline {
                         sh "echo pwd is ${PWD}"
                         sh "cat src/components/App/App.test.js"
                         sh 'ls -ltrh coverage'
-                        sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
+                        sh '''$SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN
+                        -Dsonar.organization=$ORGANIZATION \
                         -Dsonar.java.binaries=build/classes/java/ \
                         -Dsonar.projectKey=$PROJECT_NAME \
                         -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
