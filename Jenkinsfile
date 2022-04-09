@@ -19,7 +19,7 @@ pipeline {
         stage('Test') {
           steps {
             nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-              sh 'npm test'
+              sh 'npm test --coverage=true'
             }
             sh 'ls -l'
             archiveArtifacts artifacts: 'coverage/*.*', followSymlinks: false
