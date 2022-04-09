@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Continuous integration') {
             agent {
-                docker { image: 'node:16-alpine' }
+                docker { image 'node:16-alpine' }
             }
             stages {
                 stage('Check node version and install dependencies') {
