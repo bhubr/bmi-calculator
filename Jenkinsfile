@@ -3,23 +3,26 @@ pipeline {
 
     stages {
         stage('Continuous integration') {
+            agent {
+                docker { image: 'node:16-alpine' }
+            }
             stages {
                 stage('Check node version and install dependencies') {
                     steps {
-                        nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                        // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             sh 'node --version'
                             // I had issues with `npm test`, both locally and in
                             // Jenkins pipeline execution, so I ended up using yarn
                             sh 'npm i -g yarn'
                             sh 'yarn'
-                        }
+                        // }
                     }
                 }
                 stage('Run tests') {
                     steps {
-                        nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                        // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             sh 'npm test'
-                        }
+                        // }
                     }
                     post {
                         always {
