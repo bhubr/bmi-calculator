@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        PATH = "${env.HOME}/.npm-packages:${env.PATH}"
+    }
 
     stages {
         stage('Continuous integration') {
@@ -10,9 +13,6 @@ pipeline {
                 stage('Check node version and install dependencies') {
                     steps {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            environment {
-                                PATH = "${env.HOME}/.npm-packages:${env.PATH}"
-                            }
                             script {
                                 npmdir = "${HOME}/.npm-packages"
                                 if (fileExists(npmdir)) {
