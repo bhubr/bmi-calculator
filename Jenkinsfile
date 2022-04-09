@@ -6,13 +6,13 @@ pipeline {
     }
 
     stages {
-        stage('Check env') {
-            steps {
-                sh 'env'
-                sh "echo try 1 ${SONAR_HOST_URL}"
-                sh "echo try 2 ${env.SONAR_HOST_URL}"
-            }
-        }
+        // stage('Check env') {
+        //     steps {
+        //         sh 'env'
+        //         // sh "echo try 1 ${SONAR_HOST_URL}"
+        //         // sh "echo try 2 ${env.SONAR_HOST_URL}"
+        //     }
+        // }
         stage('Continuous integration') {
             agent {
                 docker { image 'node:16-alpine' }
