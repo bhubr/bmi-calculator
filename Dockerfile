@@ -1,7 +1,7 @@
 FROM nginx:stable-alpine
 
 # Fix vulnerability in xz-libs 5.2.5-r0
-# RUN apk add xz-libs
+RUN apk add xz-libs=5.2.5-r1 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 # Labels
 # https://ocr-d.de/en/spec/docker
