@@ -16,6 +16,7 @@ pipeline {
                                     echo 'Yes .npm-packages exists'
                                     sh "rmdir ${npmdir}"
                                     echo "removed ${npmdir}"
+                                }
                                 // } else {
                                 //     echo 'No .npm-packages does not exist, create it'
                                 //     sh "mkdir ${HOME}/.npm-packages"
