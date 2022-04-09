@@ -35,7 +35,7 @@ pipeline {
                         script {
                             if (fileExists("coverage")) {
                                 echo ">>> REMOVE coverage from previous tests"
-                                sh "mkdir -rf coverage"
+                                sh "rm -rf coverage"
                             }
                         }
                         sh 'echo package.json'
