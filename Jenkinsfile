@@ -41,6 +41,7 @@ pipeline {
                         sh 'npm test'
                         sh "echo pwd is ${PWD}"
                         sh 'ls -ltrh coverage'
+                        stash includes: 'coverage/**/*', name: 'coverage-data'
                     }
                     post {
                         always {
@@ -61,8 +62,15 @@ pipeline {
             // We need to wrap nodejs block inside withSonarQubeEnv
             // in order to perform SCA on JavaScript code
             steps {
+                script {
+                    if (fileExists("coverage")) {
+                        echo ">>> REMOVE coverage from previous tests"
+                        sh "rm -rf coverage"
+                    }
+                }
                 withSonarQubeEnv('SonarQube EC2 instance') {
                     nodejs(nodeJSInstallationName: 'Node 16 LTS') {
+                        unstash 'coverage-data'
                         // Important: send lcov.info so that SonarQube processes
                         // code coverage output from Jest
                         sh "echo pwd is ${PWD}"
