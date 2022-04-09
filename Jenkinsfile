@@ -67,7 +67,7 @@ pipeline {
             // Get path to sonar-scanner,
             // Set variables to be used as organization and projectKey
             environment {
-                SCANNER_HOME = tool 'Sonar Scanner 4'
+                // SCANNER_HOME = tool 'Sonar Scanner 4'
                 ORGANIZATION = "bhubr-github"
                 PROJECT_NAME = "bhubr-jenkins-manning-sca-lp"
             }
@@ -87,10 +87,12 @@ pipeline {
                         // code coverage output from Jest
                         sh "env"
                         sh "echo pwd is ${PWD}"
+                        sh "echo org is ${ORGANIZATION}"
+                        sh "echo PROJECT_NAME is ${PROJECT_NAME}"
                         sh "echo sonar host URL is ${SONAR_HOST_URL}"
-                        sh "cat src/components/App/App.test.js"
                         sh 'ls -ltrh coverage'
-                        sh '''$SCANNER_HOME/bin/sonar-scanner \
+                        sh ''
+                        sh '''sonar-scanner \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_AUTH_TOKEN
                         -Dsonar.organization=bhubr-github \
