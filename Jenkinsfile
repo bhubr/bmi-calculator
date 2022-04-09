@@ -113,7 +113,6 @@ pipeline {
                 }
                 stage('Zip build and archive it') {
                     steps {
-                        sh "zip -r build.zip build/"
                         zip zipFile: 'build.zip', dir: 'build', overwrite: true
                         stash includes: 'build.zip', name: 'build-archive', allowEmpty: false
                     }
