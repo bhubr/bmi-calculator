@@ -153,12 +153,10 @@ pipeline {
             }
         }
         stage('Trivy image scan') {
-            agent {
-                docker { image 'aquasec/trivy:latest' }
-            }
             steps {
                 // sh "trivy image ${IMAGE_NAME}:latest"
-                sh "trivy image mitesh51/bmi-calc:1.0"
+                // sh "trivy image mitesh51/bmi-calc:1.0"
+                sh "docker run aquasec/trivy:latest image mitesh51/bmi-calc:1.0"
             }
         }
     }
