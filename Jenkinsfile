@@ -12,20 +12,20 @@ pipeline {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                             script {
                                 npmdir = "${HOME}/.npm-packages"
+                                if (fileExists(npmdir)) {
+                                    echo 'Yes .npm-packages exists'
+                                } else {
+                                    echo 'No .npm-packages does not exist, create it'
+                                    sh "mkdir ${HOME}/.npm-packages"
+                                    if (fileExists(npmdir)) {
+                                        echo 'Yes .npm-packages has been created'
+                                    } else {
+                                        echo 'failure to create .npm-packages'
+                                    }
+                                }
                             }
                             sh 'ash ./setup-npm.sh'
                             sh 'node --version'
-                            if (fileExists(npmdir)) {
-                                echo 'Yes .npm-packages exists'
-                            } else {
-                                echo 'No .npm-packages does not exist, create it'
-                                sh "mkdir ${HOME}/.npm-packages"
-                                if (fileExists(npmdir)) {
-                                    echo 'Yes .npm-packages has been created'
-                                } else {
-                                    echo 'failure to create .npm-packages'
-                                }
-                            }
                             // I had issues with `npm test`, both locally and in
                             // Jenkins pipeline execution, so I ended up using yarn
                             sh 'npm i -g yarn'
