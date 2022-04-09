@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         PATH = "${env.HOME}/.npm-packages:${env.PATH}"
+        NPM_PACKAGES = "${env.HOME}/.npm-packages"
     }
 
     stages {
@@ -23,8 +24,8 @@ pipeline {
                                 } else {
                                     echo 'No .npm-packages does not exist, create it'
                                     echo "amended PATH: ${PATH}"
-                                    // sh "mkdir ${HOME}/.npm-packages"
-                                    // sh "npm config set prefix ${npmdir}"
+                                    sh "mkdir ${HOME}/.npm-packages"
+                                    
                                     // if (fileExists(npmdir)) {
                                     //     echo 'Yes .npm-packages has been created'
                                     // } else {
@@ -32,7 +33,8 @@ pipeline {
                                     // }
                                 }
                             }
-                            sh 'ash ./setup-npm.sh'
+                            sh "npm config set prefix ${npmdir}"
+                            // sh 'ash ./setup-npm.sh'
                             sh 'node --version'
                             // I had issues with `npm test`, both locally and in
                             // Jenkins pipeline execution, so I ended up using yarn
