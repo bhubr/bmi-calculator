@@ -13,41 +13,33 @@ pipeline {
             stages {
                 stage('Check node version and install dependencies') {
                     steps {
-                        // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            script {
-                                npmdir = "${HOME}/.npm-packages"
-                                if (fileExists(npmdir)) {
-                                    echo 'Yes .npm-packages exists'
-                                //     sh "rmdir ${npmdir}"
-                                //     echo "removed ${npmdir}"
-                                // }
-                                } else {
-                                    echo 'No .npm-packages does not exist, create it'
-                                    echo "amended PATH: ${PATH}"
-                                    sh "mkdir ${HOME}/.npm-packages"
-                                    
-                                    // if (fileExists(npmdir)) {
-                                    //     echo 'Yes .npm-packages has been created'
-                                    // } else {
-                                    //     echo 'failure to create .npm-packages'
-                                    // }
-                                }
+                        script {
+                            npmdir = "${HOME}/.npm-packages"
+                            if (fileExists(npmdir)) {
+                                echo '.npm-packages folder exists'
+                            } else {
+                                echo '.npm-packages does not exist, create it'
+                                sh "mkdir ${HOME}/.npm-packages"
                             }
-                            sh "npm config set prefix ${npmdir}"
-                            // sh 'ash ./setup-npm.sh'
-                            sh 'node --version'
-                            // I had issues with `npm test`, both locally and in
-                            // Jenkins pipeline execution, so I ended up using yarn
-                            sh 'npm i -g yarn'
-                            sh 'yarn'
-                        // }
+                        }
+                        sh "npm config set prefix ${npmdir}"
+                        sh 'node --version'
+                        // I had issues with `npm test`, both locally and in
+                        // Jenkins pipeline execution, so I ended up using yarn
+                        sh 'npm i -g yarn'
+                        sh 'yarn'
                     }
                 }
                 stage('Run tests') {
                     steps {
-                        // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            sh 'npm test'
-                        // }
+                        script {
+                            if (fileExists("coverage")) {
+                                echo ">>> REMOVE coverage from previous tests"
+                                sh "mkdir -rf coverage"
+                            }
+                        }
+                        sh 'echo package.json'
+                        sh 'npm test'
                     }
                     post {
                         always {
