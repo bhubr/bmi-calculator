@@ -119,11 +119,24 @@ pipeline {
                 }
             }
         }
-        stage('Retrieve staged build') {
-            steps {
-                sh "cd /tmp"
-                unstash 'build-archive'
-                sh 'ls -l *.zip'
+        stage('Docker build and publish') {
+            stages {
+                stage('Retrieve stashed build') {
+                    steps {
+                        unstash 'build-archive'
+                        unzip zipFile: 'build.zip'
+                    }
+                }
+                stage('Docker build') {
+                    steps {
+                        sh '''docker build \
+                        --label org.label-schema.name=bhubr/bmi-calculator \
+                        --label org.label-schema.build-date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+                        --label org.label-schema.vcs-ref=$(git rev-parse --short HEAD) \
+                        --label org.label-schema.version=0.1 \
+                        -t bhubr/bmi-calculator:latest .'''
+                    }
+                }
             }
         }
     }
