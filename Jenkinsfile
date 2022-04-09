@@ -14,15 +14,17 @@ pipeline {
                                 npmdir = "${HOME}/.npm-packages"
                                 if (fileExists(npmdir)) {
                                     echo 'Yes .npm-packages exists'
-                                } else {
-                                    echo 'No .npm-packages does not exist, create it'
-                                    sh "mkdir ${HOME}/.npm-packages"
-                                    if (fileExists(npmdir)) {
-                                        echo 'Yes .npm-packages has been created'
-                                    } else {
-                                        echo 'failure to create .npm-packages'
-                                    }
-                                }
+                                    sh "rmdir ${npmdir}"
+                                    echo "removed ${npmdir}"
+                                // } else {
+                                //     echo 'No .npm-packages does not exist, create it'
+                                //     sh "mkdir ${HOME}/.npm-packages"
+                                //     if (fileExists(npmdir)) {
+                                //         echo 'Yes .npm-packages has been created'
+                                //     } else {
+                                //         echo 'failure to create .npm-packages'
+                                //     }
+                                // }
                             }
                             sh 'ash ./setup-npm.sh'
                             sh 'node --version'
