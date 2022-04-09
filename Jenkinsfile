@@ -1,25 +1,48 @@
 pipeline {
     agent any
+    // Set variables that will be used in Continuous integration step
+    environment {
+        PATH = "${env.HOME}/.npm-packages:${env.PATH}"
+        NPM_PACKAGES = "${env.HOME}/.npm-packages"
+    }
 
     stages {
         stage('Continuous integration') {
+            agent {
+                docker { image 'node:16-alpine' }
+            }
             stages {
                 stage('Check node version and install dependencies') {
                     steps {
-                        nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            sh 'node --version'
-                            // I had issues with `npm test`, both locally and in
-                            // Jenkins pipeline execution, so I ended up using yarn
-                            sh 'npm i -g yarn'
-                            sh 'yarn'
+                        script {
+                            npmdir = "${HOME}/.npm-packages"
+                            if (fileExists(npmdir)) {
+                                echo '.npm-packages folder exists'
+                            } else {
+                                echo '.npm-packages does not exist, create it'
+                                sh "mkdir ${HOME}/.npm-packages"
+                            }
                         }
+                        // Set npm packages dir to ~/.npm-packages,
+                        // in order to avoid using `sudo` before `npm i -g yarn`
+                        sh "npm config set prefix ${npmdir}"
+
+                        // I had issues with `npm test`, both locally and in
+                        // Jenkins pipeline execution, so I ended up using yarn
+                        sh 'npm i -g yarn'
+                        sh 'yarn'
                     }
                 }
                 stage('Run tests') {
                     steps {
-                        nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            sh 'npm test'
+                        script {
+                            if (fileExists("coverage")) {
+                                echo "Remove coverage data from previous test runs"
+                                sh "rm -rf coverage"
+                            }
                         }
+                        sh 'npm test'
+                        stash includes: 'coverage/**/*', name: 'coverage-data'
                     }
                     post {
                         always {
@@ -30,27 +53,39 @@ pipeline {
             }
         }
         stage('Static Code Analysis') {
-            // Get path to sonar-scanner,
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                }
+            }
             // Set variables to be used as organization and projectKey
             environment {
-                SCANNER_HOME = tool 'Sonar Scanner 4'
                 ORGANIZATION = "bhubr-github"
                 PROJECT_NAME = "bhubr-jenkins-manning-sca-lp"
             }
-            // We need to wrap nodejs block inside withSonarQubeEnv
-            // in order to perform SCA on JavaScript code
             steps {
-                withSonarQubeEnv('SonarQube EC2 instance') {
-                    nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                        // Important: send lcov.info so that SonarQube processes
-                        // code coverage output from Jest
-                        sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
-                        -Dsonar.java.binaries=build/classes/java/ \
-                        -Dsonar.projectKey=$PROJECT_NAME \
-                        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                        -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
-                        -Dsonar.sources=src'''
+                // Remove coverage folder if it exists
+                script {
+                    if (fileExists("coverage")) {
+                        echo "Remove coverage data from previous test runs"
+                        sh "rm -rf coverage"
                     }
+                }
+                withSonarQubeEnv('SonarQube EC2 instance') {
+                    // unstash coverage data from previous step
+                    unstash 'coverage-data'
+
+                    // Important: send lcov.info so that SonarQube processes
+                    // code coverage output from Jest
+                    sh '''sonar-scanner \
+                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.login=$SONAR_AUTH_TOKEN \
+                    -Dsonar.organization=$ORGANIZATION \
+                    -Dsonar.java.binaries=build/classes/java/ \
+                    -Dsonar.projectKey=$PROJECT_NAME \
+                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                    -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
+                    -Dsonar.sources=src'''
                 }
             }
         }
