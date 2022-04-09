@@ -119,11 +119,39 @@ pipeline {
                 }
             }
         }
-        stage('Retrieve staged build') {
-            steps {
-                sh "cd /tmp"
-                unstash 'build-archive'
-                sh 'ls -l *.zip'
+        stage('Docker build and publish') {
+            environment {
+                DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
+                IMAGE_NAME = "${env.DOCKERHUB_CREDENTIALS_USR}/bmi-calculator"
+            }
+            stages {
+                stage('Retrieve stashed build') {
+                    steps {
+                        unstash 'build-archive'
+                        unzip zipFile: 'build.zip', dir: 'build'
+                    }
+                }
+                stage('Docker build') {
+                    steps {
+                        sh '''docker build \
+                        --label org.label-schema.name=IMAGE_NAME \
+                        --label org.label-schema.build-date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+                        --label org.label-schema.vcs-ref=$(git rev-parse --short HEAD) \
+                        --label org.label-schema.version=0.1 \
+                        -t $IMAGE_NAME:latest .'''
+                    }
+                }
+                stage('Docker Hub login') {
+                    steps {
+                        sh '''echo $DOCKERHUB_CREDENTIALS_PSW | docker login \
+                          -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'''
+                    }
+                }
+                stage('Docker Hub push') {
+                    steps {
+                        sh 'docker push $IMAGE_NAME:latest'
+                    }
+                }
             }
         }
     }
