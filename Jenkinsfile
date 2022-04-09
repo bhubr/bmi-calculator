@@ -101,11 +101,6 @@ pipeline {
                 docker { image 'node:16-alpine' }
             }
             stages {
-                stage('Setup') {
-                    steps {
-                        sh 'sudo apk add zip'
-                    }
-                }
                 stage('Generate build') {
                     steps {
                         script {
@@ -119,7 +114,14 @@ pipeline {
                 stage('Zip build and archive it') {
                     steps {
                         sh "zip -r build.zip build/"
+                        zip zipFile: 'build.zip', dir: 'build', overwrite: true
                         stash includes: 'build.zip', name: 'build-archive', allowEmpty: false
+                    }
+                }
+                stage('Retrieve staged build') {
+                    steps {
+                        sh "cd /tmp"
+                        unstash 'build-archive'
                     }
                 }
             }
