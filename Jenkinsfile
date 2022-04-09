@@ -10,7 +10,7 @@ pipeline {
                 stage('Check node version and install dependencies') {
                     steps {
                         // nodejs(nodeJSInstallationName: 'Node 16 LTS') {
-                            sh 'bash ./setup-npm.sh'
+                            sh 'ash ./setup-npm.sh'
                             sh 'node --version'
                             // I had issues with `npm test`, both locally and in
                             // Jenkins pipeline execution, so I ended up using yarn

@@ -1,2 +1,3 @@
-#!/bin/bash
+#!/bin/ash
 echo "Hello NPM"
+which ash
