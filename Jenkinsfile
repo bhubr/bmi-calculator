@@ -103,7 +103,7 @@ pipeline {
             stages {
                 stage('Setup') {
                     steps {
-                        sh 'apk add zip'
+                        sh 'sudo apk add zip'
                     }
                 }
                 stage('Generate build') {
