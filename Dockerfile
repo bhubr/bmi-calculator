@@ -16,7 +16,7 @@ LABEL org.label-schema.vcs-url="https://github.com/bhubr/bmi-calculator/"
 # LABEL org.label-schema.build-date=$BUILD_DATE
 # LABEL org.label-schema.version=$BUILD_VERSION
 # LABEL org.label-schema.vcs-ref=$VCS_REF
-LABEL org.label-schema.docker.cmd="docker run -p 8080:80 -d bhubr/bmi-calculator:latest"
+LABEL org.label-schema.docker.cmd="docker run -p 8080:80 -d benoithubert/bmi-calculator:latest"
 
 # HTML content shold reside in /usr/share/nginx/html
 # See https://hub.docker.com/_/nginx?tab=description
