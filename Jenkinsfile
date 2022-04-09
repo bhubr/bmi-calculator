@@ -124,7 +124,8 @@ pipeline {
                 stage('Retrieve stashed build') {
                     steps {
                         unstash 'build-archive'
-                        unzip zipFile: 'build.zip'
+                        sh 'ls -l'
+                        unzip zipFile: 'build.zip', dir: 'build'
                     }
                 }
                 stage('Docker build') {
