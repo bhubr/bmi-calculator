@@ -100,11 +100,23 @@ pipeline {
             agent {
                 docker { image 'node:16-alpine' }
             }
-            steps {
-                if (fileExists("build")) {
-                    sh "rm -rf build"
+            stages {
+                stage('Generate build') {
+                    steps {
+                        script {
+                            if (fileExists("build")) {
+                                sh "rm -rf build"
+                            }
+                        }
+                        sh "npm run build"
+                    }
                 }
-                sh "npm run build"
+                stage('Zip build and archive it') {
+                    steps {
+                        sh "zip -r build.zip build/"
+                        stash includes: 'build.zip', name: 'build-archive', allowEmpty: false
+                    }
+                }
             }
         }
     }
