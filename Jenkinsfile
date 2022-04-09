@@ -117,12 +117,13 @@ pipeline {
                         stash includes: 'build.zip', name: 'build-archive', allowEmpty: false
                     }
                 }
-                stage('Retrieve staged build') {
-                    steps {
-                        sh "cd /tmp"
-                        unstash 'build-archive'
-                    }
-                }
+            }
+        }
+        stage('Retrieve staged build') {
+            steps {
+                sh "cd /tmp"
+                unstash 'build-archive'
+                sh 'ls -l *.zip'
             }
         }
     }
