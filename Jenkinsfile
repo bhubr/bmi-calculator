@@ -94,10 +94,10 @@ pipeline {
                         sh ''
                         sh '''sonar-scanner \
                         -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_AUTH_TOKEN
-                        -Dsonar.organization=bhubr-github \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN \
+                        -Dsonar.organization=$ORGANIZATION \
                         -Dsonar.java.binaries=build/classes/java/ \
-                        -Dsonar.projectKey=bhubr-jenkins-manning-sca-lp \
+                        -Dsonar.projectKey=$PROJECT_NAME \
                         -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                         -Dsonar.coverage.exclusions=**/*.test.js,src/index.js,src/setupTests.js \
                         -Dsonar.sources=src'''
