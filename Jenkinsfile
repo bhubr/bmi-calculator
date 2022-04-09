@@ -128,13 +128,6 @@ pipeline {
                 stage('Retrieve stashed build') {
                     steps {
                         unstash 'build-archive'
-                        sh 'echo BEFORE CLEAN UP'
-                        sh 'ls -al'
-                        sh '''rm -rf asset-manifest.json icon.ico icon.png icon192.png icon512.png \
-                            index.html precache-manifest.086cb75b1ab9d5c84d2f5df001c01fc9.js \
-                            robots.txt service-worker.js static'''
-                        sh 'echo AFTER CLEAN UP'
-                        sh 'ls -al'
                         unzip zipFile: 'build.zip', dir: 'build'
                     }
                 }
