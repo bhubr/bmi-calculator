@@ -38,8 +38,9 @@ pipeline {
                                 sh "rm -rf coverage"
                             }
                         }
-                        sh 'echo package.json'
                         sh 'npm test'
+                        sh "echo pwd is ${PWD}"
+                        sh 'ls -ltrh coverage'
                     }
                     post {
                         always {
@@ -64,6 +65,8 @@ pipeline {
                     nodejs(nodeJSInstallationName: 'Node 16 LTS') {
                         // Important: send lcov.info so that SonarQube processes
                         // code coverage output from Jest
+                        sh "echo pwd is ${PWD}"
+                        sh 'ls -ltrh coverage'
                         sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
                         -Dsonar.java.binaries=build/classes/java/ \
                         -Dsonar.projectKey=$PROJECT_NAME \
