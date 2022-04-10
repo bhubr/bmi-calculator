@@ -154,9 +154,7 @@ pipeline {
         }
         stage('Trivy image scan') {
             steps {
-                // sh "trivy image ${IMAGE_NAME}:latest"
-                // sh "trivy image mitesh51/bmi-calc:1.0"
-                sh "docker run aquasec/trivy:latest image --exit-code 1 --severity CRITICAL mitesh51/bmi-calc:1.0"
+                sh "docker run aquasec/trivy:latest image --exit-code 1 --severity CRITICAL ${IMAGE_NAME}:latest"
             }
         }
     }
