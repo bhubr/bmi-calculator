@@ -4,6 +4,8 @@ pipeline {
     environment {
         PATH = "${env.HOME}/.npm-packages:${env.PATH}"
         NPM_PACKAGES = "${env.HOME}/.npm-packages"
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
+        IMAGE_NAME = "${env.DOCKERHUB_CREDENTIALS_USR}/bmi-calculator"
     }
 
     stages {
@@ -120,10 +122,6 @@ pipeline {
             }
         }
         stage('Docker build and publish') {
-            environment {
-                DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
-                IMAGE_NAME = "${env.DOCKERHUB_CREDENTIALS_USR}/bmi-calculator"
-            }
             stages {
                 stage('Retrieve stashed build') {
                     steps {
@@ -152,6 +150,11 @@ pipeline {
                         sh 'docker push $IMAGE_NAME:latest'
                     }
                 }
+            }
+        }
+        stage('Trivy image scan') {
+            steps {
+                sh "docker run aquasec/trivy:latest image --exit-code 1 ${IMAGE_NAME}:latest"
             }
         }
     }
