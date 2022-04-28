@@ -157,6 +157,11 @@ pipeline {
                 sh "docker run aquasec/trivy:latest image --exit-code 1 ${IMAGE_NAME}:latest"
             }
         }
+        stage('Deploy to EKS') {
+            withKubeConfig([credentialsId: 'eks-credentials']) {
+                sh 'kubectl apply -f eks'
+            }
+        }
     }
     post {
         success {
