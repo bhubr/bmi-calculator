@@ -158,8 +158,10 @@ pipeline {
             }
         }
         stage('Deploy to EKS') {
-            withKubeConfig([credentialsId: 'eks-credentials']) {
-                sh 'kubectl apply -f eks'
+            steps {
+                withKubeConfig([credentialsId: 'eks-credentials']) {
+                    sh 'kubectl apply -f eks'
+                }
             }
         }
     }
