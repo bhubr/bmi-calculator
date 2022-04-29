@@ -168,13 +168,15 @@ pipeline {
                         sh "mkdir ${HOME}/bin"
                     }
                 }
-                withKubeConfig([credentialsId: 'eks-credentials']) {
-                    sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.12/bin/linux/amd64/kubectl"'  
-                    sh 'chmod u+x ./kubectl'
-                    sh 'curl -o aws-iam-authenticator https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator'
-                    sh 'chmod u+x ./aws-iam-authenticator'
-                    sh "mv aws-iam-authenticator ${HOME}/bin/"
-                    sh './kubectl apply -f eks'
+                withCredentials([string(credentialsId: 'aws-ak-id', variable: 'AWS_ACCESS_KEY_ID'), string(credentialsId: 'aws-ak-secret', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    withKubeConfig([credentialsId: 'eks-credentials']) {
+                        sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.12/bin/linux/amd64/kubectl"'  
+                        sh 'chmod u+x ./kubectl'
+                        sh 'curl -o aws-iam-authenticator https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator'
+                        sh 'chmod u+x ./aws-iam-authenticator'
+                        sh "mv aws-iam-authenticator ${HOME}/bin/"
+                        sh './kubectl apply -f eks'
+                    }
                 }
             }
         }
