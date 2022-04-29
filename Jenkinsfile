@@ -2,7 +2,7 @@ pipeline {
     agent any
     // Set variables that will be used in Continuous integration step
     environment {
-        PATH = "${env.HOME}/.npm-packages:${env.PATH}"
+        PATH = "${env.HOME}/.npm-packages:${env.HOME}/bin:${env.PATH}"
         NPM_PACKAGES = "${env.HOME}/.npm-packages"
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
         IMAGE_NAME = "${env.DOCKERHUB_CREDENTIALS_USR}/bmi-calculator"
@@ -159,9 +159,21 @@ pipeline {
         // }
         stage('Deploy to EKS') {
             steps {
+                script {
+                    bindir = "${HOME}/bindir"
+                    if (fileExists(bindir)) {
+                        echo 'bin folder exists'
+                    } else {
+                        echo 'bin folder does not exist, create it'
+                        sh "mkdir ${HOME}/bin"
+                    }
+                }
                 withKubeConfig([credentialsId: 'eks-credentials']) {
                     sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.12/bin/linux/amd64/kubectl"'  
                     sh 'chmod u+x ./kubectl'
+                    sh 'curl -o aws-iam-authenticator https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator'
+                    sh 'chmod u+x ./aws-iam-authenticator'
+                    sh "mv aws-iam-authenticator ${HOME}/bin/"
                     sh './kubectl apply -f eks'
                 }
             }
