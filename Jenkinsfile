@@ -172,7 +172,7 @@ pipeline {
                     withKubeConfig([credentialsId: 'eks-credentials']) {
                         sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.21.12/bin/linux/amd64/kubectl"'  
                         sh 'chmod u+x ./kubectl'
-                        sh 'curl -o aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.7/aws-iam-authenticator_0.5.7_linux_amd64'
+                        sh 'curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.7/aws-iam-authenticator_0.5.7_linux_amd64'
                         sh 'chmod u+x ./aws-iam-authenticator'
                         sh "mv aws-iam-authenticator ${HOME}/bin/"
                         sh './kubectl apply -f eks'
