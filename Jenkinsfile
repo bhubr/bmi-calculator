@@ -165,7 +165,7 @@ pipeline {
                         echo 'bin folder exists'
                     } else {
                         echo 'bin folder does not exist, create it'
-                        sh "mkdir ${HOME}/bin"
+                        // sh "mkdir ${HOME}/bin"
                     }
                 }
                 withCredentials([string(credentialsId: 'aws-ak-id', variable: 'AWS_ACCESS_KEY_ID'), string(credentialsId: 'aws-ak-secret', variable: 'AWS_SECRET_ACCESS_KEY')]) {
